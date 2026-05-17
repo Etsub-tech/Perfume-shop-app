@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'bottom_nav.dart';
+import 'perfume_model.dart';
+import 'category_chips.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -10,6 +12,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
+  int _selectedChipIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +42,24 @@ class _MyHomePageState extends State<MyHomePage> {
         margin: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Text("Featured"),
             Text(
               "Categories",
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
+
+            const SizedBox(height: 14),
+
+            CategoryChips(
+              selectedIndex: _selectedChipIndex,
+              selectedColor: perfumes[_selectedChipIndex].color,
+              onChipTapped: (index) {
+                setState((){
+                  _selectedChipIndex = index;
+                });
+              }
+            )
             
           ],
         ),
