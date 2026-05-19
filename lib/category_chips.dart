@@ -25,11 +25,11 @@ class CategoryChips extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 0),
 
-       itemCount: perfumes.length,
+       itemCount: perfumeList.length,
 
         itemBuilder: (context, index) {
 
-          final Perfume perfume = perfumes[index];
+          final Perfume perfume = perfumeList[index];
           final bool isSelected = index == selectedIndex;
 
           return GestureDetector(
