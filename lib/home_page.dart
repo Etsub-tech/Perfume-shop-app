@@ -1,5 +1,3 @@
-// lib/home_page.dart
-
 import 'package:flutter/material.dart';
 import 'bottom_nav.dart';
 import 'perfume_model.dart';
@@ -7,6 +5,8 @@ import 'category_chips.dart';
 import 'perfume_card.dart';
 import 'perfume_grid_card.dart';
 import 'detail_page.dart';
+import 'cart_page.dart';
+import 'search_page.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -16,111 +16,158 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _selected = 0;
-  int _navIndex = 0;
+  int _selectedCategoryIndex = 0;
+  int _selectedBottomNavIndex = 0;
+  final List<Perfume> _cart = [];
 
-  final PageController _pageController = PageController(
-    viewportFraction: 0.85,
-  );
+  List<Perfume> get _selectedPerfumes {
+    if (categoryList[_selectedCategoryIndex] == 'All') {
+      return perfumeList;
+    }
+    return perfumeList
+        .where((perfume) => perfume.category == categoryList[_selectedCategoryIndex])
+        .toList();
+  }
+
+  void _openCart() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CartPage(
+          cartItems: _cart,
+          onRemove: _removeFromCart,
+        ),
+      ),
+    );
+  }
+
+  void _openSearch() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SearchPage(
+          allPerfumes: perfumeList,
+          onAddToCart: (perfume) {
+            _addToCart(perfume);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('${perfume.name} added to cart')),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  void _addToCart(Perfume perfume) {
+    setState(() {
+      _cart.add(perfume);
+    });
+  }
+
+  void _removeFromCart(Perfume perfume) {
+    setState(() {
+      _cart.remove(perfume);
+    });
+  }
+
+  void _onCategoryTapped(int index) {
+    setState(() {
+      _selectedCategoryIndex = index;
+    });
+  }
 
   @override
   void dispose() {
-    _pageController.dispose();
     super.dispose();
-  }
-
-  void _onChipTapped(int index) {
-    setState(() => _selected = index);
-    _pageController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 400),
-      curve: Curves.easeInOut,
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final Perfume current = perfumeList[_selected];
+    final Perfume current = _selectedPerfumes.isNotEmpty
+        ? _selectedPerfumes.first
+        : perfumeList.first;
 
-    // Your exact background color formula — kept as-is
-    final Color aBitLighterColor = Color.lerp(current.second_color, Colors.white, 0.5)!;
+    final Color aBitLighterColor =
+        Color.lerp(current.secondColor, Colors.white, 0.5)!;
 
     return Scaffold(
       backgroundColor: aBitLighterColor,
-
       appBar: AppBar(
         backgroundColor: aBitLighterColor,
         elevation: 0,
         leading: const Icon(Icons.menu, color: Color(0xFF2A1A1A)),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search, color: Color(0xFF2A1A1A)),
+            onPressed: _openSearch,
+          ),
+        ],
       ),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             const SizedBox(height: 20),
             const Text('Featured',
                 style: TextStyle(
-                    fontSize: 13,
-                    color: Color.fromARGB(255, 83, 83, 83))),
-
+                    fontSize: 13, color: Color.fromARGB(255, 83, 83, 83))),
             const SizedBox(height: 10),
             const Text('Category',
-                style: TextStyle(
-                    fontSize: 26, fontWeight: FontWeight.bold)),
-
+                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
             const SizedBox(height: 50),
-
             CategoryChips(
-              selectedIndex: _selected,
-              selectedColor: current.second_color,
-              onChipTapped: _onChipTapped,
+              categories: categoryList,
+              selectedIndex: _selectedCategoryIndex,
+              selectedColor: current.secondColor,
+              onChipTapped: _onCategoryTapped,
             ),
-
             const SizedBox(height: 50),
-
-            // PageView replaces ListView — snaps cleanly,
-            // no ScrollController or math needed
             SizedBox(
-              height: 350,
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: perfumeList.length,
-                onPageChanged: (index) {
-                  setState(() => _selected = index);
-                },
+              height: 360,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: _selectedPerfumes.length,
+                padding: const EdgeInsets.only(right: 16),
+                separatorBuilder: (context, index) => const SizedBox(width: 16),
                 itemBuilder: (context, index) {
-                  return GestureDetector(
+                  final perfume = _selectedPerfumes[index];
+                  return PerfumeCard(
+                    perfume: perfume,
+                    perfumeColor: perfume.color,
+                    isSelected: false,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) =>
-                            DetailPage(perfume: perfumeList[index]),
+                        builder: (_) => DetailPage(
+                          perfume: perfume,
+                          onAddToCart: () {
+                            _addToCart(perfume);
+                            _openCart();
+                          },
+                        ),
                       ),
-                    ),
-                    child: PerfumeCard(
-                      perfume: perfumeList[index],
-                      perfumeColor: perfumeList[index].color,
-                      isSelected: index == _selected,
                     ),
                   );
                 },
               ),
             ),
-
-            const SizedBox(height: 50),
-
-            PerfumeGridCard(selectedColor: current.second_color),
-
+            const SizedBox(height: 20),
+            PerfumeGridCard(
+              selectedColor: current.secondColor,
+              category: categoryList[_selectedCategoryIndex],
+            ),
           ],
         ),
       ),
-
       bottomNavigationBar: BottomNavBar(
-        selectedIndex: _navIndex,
-        onItemTapped: (i) => setState(() => _navIndex = i),
+        selectedIndex: _selectedBottomNavIndex,
+        onItemTapped: (i) {
+          setState(() => _selectedBottomNavIndex = i);
+          if (i == 1) {
+            _openCart();
+          }
+        },
       ),
     );
   }

@@ -32,12 +32,12 @@ class BottomNavBar extends StatelessWidget {
           onTap: onItemTapped,
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart),
-              label: "Cart",
+              icon: Icon(Icons.home),
+              label: "Home",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: "Profile",
+              icon: Icon(Icons.shopping_cart),
+              label: "Cart",
             ),
           ],
           selectedItemColor: const Color.fromARGB(255, 165, 102, 123),

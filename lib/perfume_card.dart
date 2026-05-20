@@ -2,32 +2,25 @@
 
 import 'package:flutter/material.dart';
 import 'perfume_model.dart';
-import 'detail_page.dart';
 
 class PerfumeCard extends StatelessWidget {
   final Perfume perfume;
-  final bool isSelected; 
+  final bool isSelected;
   final Color perfumeColor;
+  final VoidCallback? onTap;
 
   const PerfumeCard({
     super.key,
     required this.perfume,
     required this.perfumeColor,
     this.isSelected = false,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DetailPage(perfume: perfume),
-          ),
-        );
-      },
-
+      onTap: onTap,
       child: Container(
         width: 300,
         margin: const EdgeInsets.only(right: 20),
@@ -42,10 +35,9 @@ class PerfumeCard extends StatelessWidget {
             color: perfumeColor,
             borderRadius: BorderRadius.circular(20)),
 
-          child: Container(
+          child: SizedBox(
             height: 700,
-            child:
-              Padding(
+            child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
