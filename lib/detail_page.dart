@@ -13,31 +13,39 @@ class DetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+    backgroundColor: Colors.white,
       body: Stack(
         children: [
           Container(
             height: 840,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: perfume.color,
+              color: perfume.second_color,
               borderRadius: BorderRadius.circular(60),
             ),
             child: Column(
             children: [
               SizedBox(height: 680),
-              Text(perfume.name.toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(perfume.name.toUpperCase(),
+               style: TextStyle(fontSize: 20,
+               fontWeight: FontWeight.bold,
+               color: Colors.white)),
               
               SizedBox(height: 20),
 
-              Text(perfume.description,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Text(perfume.description,
                 style: TextStyle(
                   color: Colors.white,
-                )),
+                ))),
 
                 SizedBox(height: 20),
 
-              Text(perfume.price, style: TextStyle( fontSize: 20))
-            ],)
+              Text(perfume.price, 
+              style: TextStyle( fontSize: 20,
+              color: Colors.white)
+            )],)
        ),
 
            Positioned(
@@ -48,7 +56,7 @@ class DetailPage extends StatelessWidget {
             child: Container(
             margin: const EdgeInsets.only(top: 50),
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 182, 148, 159).withOpacity(0.4),
+              color: perfume.color,
               borderRadius: BorderRadius.circular(60),
               
             ),
@@ -65,15 +73,14 @@ class DetailPage extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
-                Container(
-                  child: Center(
+                  Center(
                     child: Image.asset(
                     perfume.image,
                     height:450,
                     fit : BoxFit.cover
                     )
                   
-                ),)
+                ),
               ],
             ),
             )),
@@ -81,7 +88,21 @@ class DetailPage extends StatelessWidget {
 
        
       ),
-      bottomNavigationBar: Container(child: Text('Add to basket'))
+      bottomNavigationBar: Padding(
+      padding: EdgeInsets.symmetric(horizontal: 150, vertical: 20),
+      child: TextButton (
+        onPressed: (){
+            ScaffoldMessenger.of(context).showSnackBar( const SnackBar (content: Text('Added to cart')));
+        },
+        child: Row (
+        children: [
+          Icon(Icons.shopping_basket, 
+            color: perfume.color),
+          Text('Add to basket',
+          style: TextStyle(color: perfume.color)),
+          ])),
+           
+      )
     );
   }
 }

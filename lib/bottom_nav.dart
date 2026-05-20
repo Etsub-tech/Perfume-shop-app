@@ -40,7 +40,7 @@ class BottomNavBar extends StatelessWidget {
               label: "Profile",
             ),
           ],
-          selectedItemColor: Colors.pink,
+          selectedItemColor: const Color.fromARGB(255, 165, 102, 123),
           unselectedItemColor: Colors.grey,
         ),
       ),

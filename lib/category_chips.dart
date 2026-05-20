@@ -36,9 +36,7 @@ class CategoryChips extends StatelessWidget {
 
          onTap: () => onChipTapped(index),
 
-          child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
+          child:Container(
 
              margin: const EdgeInsets.only(right: 10),
 
@@ -73,8 +71,6 @@ class CategoryChips extends StatelessWidget {
                     color: isSelected
                         ? Colors.white
                         : Colors.grey.shade600,
-
-                    letterSpacing: 0.8,
                   ),
                 ),
               ),

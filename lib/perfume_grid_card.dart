@@ -1,85 +1,61 @@
 // lib/perfume_grid_card.dart
 
 import 'package:flutter/material.dart';
-import 'dart:ui';
-import 'perfume_model.dart';
-import 'detail_page.dart';
 
 class PerfumeGridCard extends StatelessWidget {
-  final Perfume perfume;
+  final Color selectedColor;
 
-  const PerfumeGridCard({super.key, required this.perfume});
-
+  const PerfumeGridCard({super.key, required this.selectedColor});
+  
+  Widget myOptions(String text1, String imagePath1, String text2, String imagePath2){
+        return Row(children: [
+            Column(
+              children: [
+              Card(
+              color: Color.lerp(selectedColor, Colors.white, 0.7)!,
+              child: SizedBox(
+              width: 160,
+              height: 150,
+              child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                       children: [
+                        Image.asset(imagePath1, width:40, height: 40),
+                        Text(text1, style: TextStyle(color: Color.fromARGB(255, 116, 61, 61), fontSize: 16))])) ,),),
+            ],
+            ),
+            const SizedBox(width: 20), 
+            Column(children: [
+              Card(
+                color: Color.lerp(selectedColor, Colors.white, 0.7)!,
+                child: SizedBox(
+                width:160,
+                height:150,
+                child:Center(child:Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                   children:[
+                    Image.asset(imagePath2, width:40, height: 40),
+                    Text(text2,  style: TextStyle(color: Color.fromARGB(255, 116, 61, 61), fontSize: 16))]))
+              ))
+            ],
+            )
+          ,],);
+     
+  }
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DetailPage(perfume: perfume),
-          ),
-        );
-      },
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(18),
-        child: Stack(
-          children: [
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+       Text('Brand Available', style: TextStyle(fontSize: 20),),
+       const SizedBox(height: 20),
+       myOptions("Christian Dior", "assets/images/logo1.png", "Chanel", "assets/images/logo2.png"),
+        const SizedBox(height: 20),
+        myOptions("Yves Saint Laurent", "assets/images/logo3.jpg" , "Gucci", "assets/images/logo4.avif"),
+        const SizedBox(height: 20),
+        myOptions("Versace", "assets/images/logo6.png", "Valentino", "assets/images/logo7.webp"),
+        const SizedBox(height: 20),
+    ],);
 
-            // Layer 1: colored background
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    perfume.color.withOpacity(0.25),
-                    perfume.color.withOpacity(0.5),
-                  ],
-                ),
-              ),
-            ),
-
-            // Layer 2: glass blur
-            BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Container(color: Colors.white.withOpacity(0.3)),
-            ),
-
-            // Layer 3: content
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(perfume.image, style: const TextStyle(fontSize: 36)),
-                  const SizedBox(height: 8),
-                  Text(
-                    perfume.name,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF2A1A1A),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    perfume.price,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xFF1A0A0A),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+     }
 }
